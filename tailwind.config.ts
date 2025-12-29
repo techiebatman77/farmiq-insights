@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,33 +60,72 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Custom agricultural colors
+        wheat: {
+          DEFAULT: "hsl(var(--wheat))",
+          light: "hsl(var(--wheat-light))",
+        },
+        forest: {
+          DEFAULT: "hsl(var(--forest))",
+          light: "hsl(var(--forest-light))",
+        },
+        earth: {
+          DEFAULT: "hsl(var(--earth))",
+        },
+        sky: {
+          DEFAULT: "hsl(var(--sky))",
+          light: "hsl(var(--sky-light))",
+        },
+        growth: {
+          DEFAULT: "hsl(var(--growth))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+        },
+        danger: {
+          DEFAULT: "hsl(var(--danger))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        'soft': 'var(--shadow-sm)',
+        'medium': 'var(--shadow-md)',
+        'large': 'var(--shadow-lg)',
+        'glow': 'var(--shadow-glow)',
+      },
+      backgroundImage: {
+        'gradient-hero': 'var(--gradient-hero)',
+        'gradient-wheat': 'var(--gradient-wheat)',
+        'gradient-sky': 'var(--gradient-sky)',
+        'gradient-card': 'var(--gradient-card)',
+      },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float": "float 6s ease-in-out infinite",
+        "shimmer": "shimmer 2s linear infinite",
       },
     },
   },
