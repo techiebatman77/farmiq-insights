@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
 import { StatCard } from '@/components/dashboard/StatCard';
-import { WeatherWidget } from '@/components/dashboard/WeatherWidget';
+import { LiveWeatherWidget } from '@/components/dashboard/LiveWeatherWidget';
 import { CropHealthChart } from '@/components/dashboard/CropHealthChart';
 import { MarketPrices } from '@/components/dashboard/MarketPrices';
 import { AlertsPanel } from '@/components/dashboard/AlertsPanel';
-import { FieldMap } from '@/components/dashboard/FieldMap';
+import { KeralaMap } from '@/components/dashboard/KeralaMap';
 import { CropCalendar } from '@/components/dashboard/CropCalendar';
 import { QuickActions } from '@/components/dashboard/QuickActions';
+import { SatelliteNDVI } from '@/components/dashboard/SatelliteNDVI';
 import { Leaf, MapPin, TrendingUp, Droplets } from 'lucide-react';
 
 const Index = () => {
@@ -74,15 +75,15 @@ const Index = () => {
 
           {/* Main Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column - Map & Health */}
+            {/* Left Column - Map & Satellite */}
             <div className="lg:col-span-2 space-y-6">
-              <FieldMap />
-              <CropHealthChart />
+              <KeralaMap />
+              <SatelliteNDVI />
             </div>
 
-            {/* Right Column - Widgets */}
+            {/* Right Column - Weather & Alerts */}
             <div className="space-y-6">
-              <WeatherWidget />
+              <LiveWeatherWidget />
               <AlertsPanel />
             </div>
           </div>
