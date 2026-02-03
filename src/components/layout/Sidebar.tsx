@@ -34,10 +34,22 @@ const navItems: NavItem[] = [
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  collapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
 }
 
-export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(false);
+export function Sidebar({ activeTab, onTabChange, collapsed: externalCollapsed, onCollapsedChange }: SidebarProps) {
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const collapsed = externalCollapsed ?? internalCollapsed;
+  
+  const handleCollapse = () => {
+    const newValue = !collapsed;
+    if (onCollapsedChange) {
+      onCollapsedChange(newValue);
+    } else {
+      setInternalCollapsed(newValue);
+    }
+  };
 
   return (
     <aside 
@@ -109,7 +121,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={handleCollapse}
           className="w-full justify-center"
         >
           {collapsed ? (
