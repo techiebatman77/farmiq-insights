@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TrendingUp, TrendingDown, ArrowRight, IndianRupee, BarChart3, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useApp } from '@/context/AppContext';
 import {
   LineChart,
   Line,
@@ -124,7 +125,14 @@ const marketRecommendations = [
 ];
 
 export function MarketView() {
+  const { searchQuery } = useApp();
   const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
+
+  // Filter crops based on search
+  const filteredCrops = keralaCrops.filter(crop =>
+    crop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    crop.mandi.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
@@ -141,7 +149,7 @@ export function MarketView() {
 
       {/* Price Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {keralaCrops.slice(0, 3).map((crop) => (
+        {filteredCrops.slice(0, 3).map((crop) => (
           <div key={crop.id} className="stat-card p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium">{crop.name}</span>
@@ -307,7 +315,7 @@ export function MarketView() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {keralaCrops.map((crop) => (
+              {filteredCrops.map((crop) => (
                 <TableRow key={crop.id} className="cursor-pointer hover:bg-muted/50">
                   <TableCell className="font-medium">{crop.name}</TableCell>
                   <TableCell className="font-semibold">₹{crop.price.toLocaleString()}</TableCell>

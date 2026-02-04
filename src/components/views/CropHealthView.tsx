@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Satellite, Calendar, TrendingUp, Info, Leaf, AlertTriangle } from 'lucide-react';
+import { Satellite, Calendar, TrendingUp, Info, Leaf, AlertTriangle, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useApp } from '@/context/AppContext';
 import {
   AreaChart,
   Area,
@@ -62,7 +64,14 @@ function getHealthLabel(health: number): string {
 }
 
 export function CropHealthView() {
+  const { fields, searchQuery, setActiveTab, setSelectedFieldId } = useApp();
   const [selectedCrops, setSelectedCrops] = useState<string[]>(['paddy', 'coconut', 'rubber', 'cardamom']);
+
+  // Filter fields based on search
+  const filteredFields = fields.filter(field =>
+    field.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    field.crop.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const toggleCrop = (cropId: string) => {
     setSelectedCrops(prev => 
@@ -70,6 +79,11 @@ export function CropHealthView() {
         ? prev.filter(id => id !== cropId)
         : [...prev, cropId]
     );
+  };
+
+  const handleViewDetails = (fieldId: number) => {
+    setSelectedFieldId(fieldId);
+    setActiveTab('field-detail');
   };
 
   return (
@@ -85,48 +99,63 @@ export function CropHealthView() {
         </div>
       </div>
 
-      {/* Health Overview Cards */}
+      {/* Health Overview Cards - Using actual fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {crops.map((crop) => (
-          <div key={crop.id} className="stat-card p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
+        {filteredFields.map((field) => {
+          const colors = ['#22c55e', '#3b82f6', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4'];
+          const color = colors[field.id % colors.length];
+          
+          return (
+            <div key={field.id} className="stat-card p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: color }}
+                  />
+                  <span className="font-medium text-sm truncate">{field.crop}</span>
+                </div>
+                <span className={cn(
+                  "text-xs font-medium",
+                  field.health >= 0.8 ? 'text-growth' : field.health >= 0.6 ? 'text-wheat' : 'text-danger'
+                )}>
+                  {(field.health * 100).toFixed(0)}%
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2 truncate">{field.name}</p>
+              <div className="flex items-end justify-between">
+                <div>
+                  <p className="text-lg font-semibold">{getHealthLabel(field.health)}</p>
+                  <p className="text-xs text-muted-foreground">{field.location}</p>
+                </div>
                 <div 
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: crop.color }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: `${getHealthColor(field.health)}20` }}
+                >
+                  <Leaf className="w-5 h-5" style={{ color: getHealthColor(field.health) }} />
+                </div>
+              </div>
+              <div className="mt-3 h-2 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="h-full rounded-full transition-all"
+                  style={{ 
+                    width: `${field.health * 100}%`,
+                    backgroundColor: getHealthColor(field.health)
+                  }}
                 />
-                <span className="font-medium text-sm">{crop.name.split(' (')[0]}</span>
               </div>
-              <span className={cn(
-                "text-xs font-medium",
-                crop.trend.startsWith('+') ? 'text-growth' : 'text-danger'
-              )}>
-                {crop.trend}
-              </span>
-            </div>
-            <div className="flex items-end justify-between">
-              <div>
-                <p className="text-2xl font-semibold">{(crop.health * 100).toFixed(0)}%</p>
-                <p className="text-xs text-muted-foreground">{getHealthLabel(crop.health)}</p>
-              </div>
-              <div 
-                className="w-12 h-12 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: `${getHealthColor(crop.health)}20` }}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full mt-2 text-xs"
+                onClick={() => handleViewDetails(field.id)}
               >
-                <Leaf className="w-6 h-6" style={{ color: getHealthColor(crop.health) }} />
-              </div>
+                <Eye className="w-3 h-3 mr-1" />
+                View Details
+              </Button>
             </div>
-            <div className="mt-3 h-2 bg-muted rounded-full overflow-hidden">
-              <div 
-                className="h-full rounded-full transition-all"
-                style={{ 
-                  width: `${crop.health * 100}%`,
-                  backgroundColor: getHealthColor(crop.health)
-                }}
-              />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* NDVI Legend Banner */}

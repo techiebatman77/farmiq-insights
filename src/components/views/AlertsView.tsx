@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { AlertTriangle, CheckCircle, Info, X, CloudRain, Bug, Droplets, Thermometer, Wind } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useApp } from '@/context/AppContext';
 
 interface WeatherData {
   temp: number;
@@ -140,6 +141,7 @@ const alertStyles = {
 };
 
 export function AlertsView() {
+  const { searchQuery } = useApp();
   const [alerts, setAlerts] = useState<ReturnType<typeof generateDynamicAlerts>>([]);
   const [dismissedAlerts, setDismissedAlerts] = useState<string[]>([]);
   const [filter, setFilter] = useState<'all' | 'warning' | 'info' | 'success'>('all');
@@ -181,7 +183,12 @@ export function AlertsView() {
 
   const filteredAlerts = alerts
     .filter(alert => !dismissedAlerts.includes(alert.id))
-    .filter(alert => filter === 'all' || alert.type === filter);
+    .filter(alert => filter === 'all' || alert.type === filter)
+    .filter(alert => 
+      alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      alert.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      alert.field.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   const highPriorityCount = alerts.filter(a => a.priority === 'high' && !dismissedAlerts.includes(a.id)).length;
 
