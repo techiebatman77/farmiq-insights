@@ -1,46 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Map, Layers, Satellite, TreeDeciduous } from 'lucide-react';
+import { Map, Layers, Satellite, TreeDeciduous, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useApp } from '@/context/AppContext';
 
 // Kerala bounds and center
 const KERALA_CENTER: [number, number] = [10.8505, 76.2711];
 const KERALA_BOUNDS: [[number, number], [number, number]] = [
   [8.2, 74.8], // Southwest
   [12.8, 77.5], // Northeast
-];
-
-// Sample field data for Kerala
-const fields = [
-  { 
-    id: 1, 
-    name: 'Paddy Field - Alappuzha', 
-    crop: 'Rice', 
-    health: 0.82,
-    coords: [[9.4981, 76.3388], [9.5081, 76.3388], [9.5081, 76.3488], [9.4981, 76.3488]] as [number, number][]
-  },
-  { 
-    id: 2, 
-    name: 'Coconut Grove - Thrissur', 
-    crop: 'Coconut', 
-    health: 0.91,
-    coords: [[10.5276, 76.2144], [10.5376, 76.2144], [10.5376, 76.2244], [10.5276, 76.2244]] as [number, number][]
-  },
-  { 
-    id: 3, 
-    name: 'Rubber Plantation - Kottayam', 
-    crop: 'Rubber', 
-    health: 0.75,
-    coords: [[9.5916, 76.5222], [9.6016, 76.5222], [9.6016, 76.5322], [9.5916, 76.5322]] as [number, number][]
-  },
-  { 
-    id: 4, 
-    name: 'Spice Garden - Idukki', 
-    crop: 'Cardamom', 
-    health: 0.88,
-    coords: [[9.9189, 77.1025], [9.9289, 77.1025], [9.9289, 77.1125], [9.9189, 77.1125]] as [number, number][]
-  },
 ];
 
 type LayerType = 'street' | 'satellite' | 'terrain';
@@ -67,11 +37,19 @@ function getHealthColor(health: number): string {
 }
 
 export function KeralaMap() {
+  const { fields, setActiveTab, setSelectedFieldId, searchQuery } = useApp();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const polygonsRef = useRef<L.Polygon[]>([]);
   const [activeLayer, setActiveLayer] = useState<LayerType>('satellite');
   const [selectedField, setSelectedField] = useState<typeof fields[0] | null>(null);
+
+  // Filter fields based on search
+  const filteredFields = fields.filter(field => 
+    field.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    field.crop.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
@@ -93,31 +71,8 @@ export function KeralaMap() {
       maxZoom: 18,
     }).addTo(map);
 
-    // Add field polygons
-    fields.forEach((field) => {
-      const polygon = L.polygon(field.coords, {
-        color: getHealthColor(field.health),
-        fillColor: getHealthColor(field.health),
-        fillOpacity: 0.4,
-        weight: 2,
-      }).addTo(map);
-
-      polygon.bindPopup(`
-        <div style="min-width: 150px;">
-          <h3 style="font-weight: 600; margin-bottom: 4px;">${field.name}</h3>
-          <p style="color: #666; margin: 2px 0;">Crop: ${field.crop}</p>
-          <p style="color: #666; margin: 2px 0;">NDVI: ${field.health.toFixed(2)}</p>
-          <div style="width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; margin-top: 8px;">
-            <div style="width: ${field.health * 100}%; height: 100%; background: ${getHealthColor(field.health)}; border-radius: 3px;"></div>
-          </div>
-        </div>
-      `);
-
-      polygon.on('click', () => setSelectedField(field));
-    });
-
     // Kerala state boundary (simplified)
-    const keralaBoundary = L.polygon([
+    L.polygon([
       [8.4, 76.5], [8.8, 77.2], [9.5, 77.3], [10.2, 77.0],
       [10.8, 76.3], [11.5, 75.9], [12.2, 75.2], [12.0, 74.9],
       [11.0, 75.5], [10.0, 76.0], [9.0, 76.5], [8.4, 76.5]
@@ -134,6 +89,39 @@ export function KeralaMap() {
     };
   }, []);
 
+  // Update polygons when fields change
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    // Remove old polygons
+    polygonsRef.current.forEach(p => p.remove());
+    polygonsRef.current = [];
+
+    // Add field polygons
+    filteredFields.forEach((field) => {
+      const polygon = L.polygon(field.coords, {
+        color: getHealthColor(field.health),
+        fillColor: getHealthColor(field.health),
+        fillOpacity: 0.4,
+        weight: 2,
+      }).addTo(mapRef.current!);
+
+      polygon.bindPopup(`
+        <div style="min-width: 150px;">
+          <h3 style="font-weight: 600; margin-bottom: 4px;">${field.name}</h3>
+          <p style="color: #666; margin: 2px 0;">Crop: ${field.crop}</p>
+          <p style="color: #666; margin: 2px 0;">NDVI: ${field.health.toFixed(2)}</p>
+          <div style="width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; margin-top: 8px;">
+            <div style="width: ${field.health * 100}%; height: 100%; background: ${getHealthColor(field.health)}; border-radius: 3px;"></div>
+          </div>
+        </div>
+      `);
+
+      polygon.on('click', () => setSelectedField(field));
+      polygonsRef.current.push(polygon);
+    });
+  }, [filteredFields]);
+
   // Handle layer changes
   useEffect(() => {
     if (!mapRef.current || !tileLayerRef.current) return;
@@ -145,6 +133,13 @@ export function KeralaMap() {
       maxZoom: 18,
     }).addTo(mapRef.current);
   }, [activeLayer]);
+
+  const handleViewDetails = () => {
+    if (selectedField) {
+      setSelectedFieldId(selectedField.id);
+      setActiveTab('field-detail');
+    }
+  };
 
   const layerButtons = [
     { type: 'street' as LayerType, icon: Map, label: 'Street' },
@@ -158,6 +153,7 @@ export function KeralaMap() {
         <div className="flex items-center gap-2">
           <Map className="w-5 h-5 text-forest" />
           <h3 className="font-semibold">Kerala Farm Map</h3>
+          <span className="text-xs text-muted-foreground">({filteredFields.length} fields)</span>
         </div>
         <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
           {layerButtons.map(({ type, icon: Icon, label }) => (
@@ -202,7 +198,7 @@ export function KeralaMap() {
 
         {/* Field Info Card */}
         {selectedField && (
-          <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm rounded-lg p-4 shadow-lg z-[1000] min-w-[200px]">
+          <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm rounded-lg p-4 shadow-lg z-[1000] min-w-[220px]">
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-semibold text-sm">{selectedField.name}</h4>
               <button 
@@ -215,6 +211,7 @@ export function KeralaMap() {
             <div className="space-y-1 text-xs text-muted-foreground">
               <p>Crop: <span className="text-foreground">{selectedField.crop}</span></p>
               <p>Health Score: <span className="text-foreground">{(selectedField.health * 100).toFixed(0)}%</span></p>
+              {selectedField.area && <p>Area: <span className="text-foreground">{selectedField.area}</span></p>}
             </div>
             <div className="mt-3 h-2 bg-muted rounded-full overflow-hidden">
               <div 
@@ -225,6 +222,14 @@ export function KeralaMap() {
                 }}
               />
             </div>
+            <Button 
+              size="sm" 
+              className="w-full mt-3 bg-forest hover:bg-forest/90"
+              onClick={handleViewDetails}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              View Details
+            </Button>
           </div>
         )}
       </div>

@@ -4,18 +4,34 @@ import { AlertsPanel } from '@/components/dashboard/AlertsPanel';
 import { KeralaMap } from '@/components/dashboard/KeralaMap';
 import { QuickActions } from '@/components/dashboard/QuickActions';
 import { SatelliteNDVI } from '@/components/dashboard/SatelliteNDVI';
+import { RecentActivity } from '@/components/dashboard/RecentActivity';
 import { Leaf, MapPin, TrendingUp, Droplets } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
 export function DashboardView() {
+  const { currentUser, fields } = useApp();
+  
+  // Calculate stats from fields
+  const avgNDVI = fields.length > 0 
+    ? (fields.reduce((sum, f) => sum + f.health, 0) / fields.length).toFixed(2)
+    : '0.00';
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
     <>
       {/* Welcome Section */}
       <div className="mb-8 opacity-0 animate-fade-in" style={{ animationDelay: '50ms', animationFillMode: 'forwards' }}>
         <h1 className="text-3xl font-semibold mb-2">
-          Good morning, John 👋
+          {getGreeting()}, {currentUser.name.split(' ')[0]} 👋
         </h1>
         <p className="text-muted-foreground">
-          Here's what's happening on your farm today. Weather looks great for fieldwork!
+          Here's what's happening on {currentUser.farm} today. Weather looks great for fieldwork!
         </p>
       </div>
 
@@ -28,14 +44,14 @@ export function DashboardView() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
           title="Total Fields"
-          value="4"
+          value={fields.length.toString()}
           icon={MapPin}
           iconColor="bg-forest"
           delay={100}
         />
         <StatCard
           title="Active Crops"
-          value="3"
+          value={new Set(fields.map(f => f.crop)).size.toString()}
           change={{ value: 50, type: 'increase' }}
           icon={Leaf}
           iconColor="bg-growth"
@@ -43,7 +59,7 @@ export function DashboardView() {
         />
         <StatCard
           title="Avg. NDVI"
-          value="0.75"
+          value={avgNDVI}
           change={{ value: 8, type: 'increase' }}
           icon={TrendingUp}
           iconColor="bg-wheat"
@@ -67,9 +83,10 @@ export function DashboardView() {
           <SatelliteNDVI />
         </div>
 
-        {/* Right Column - Weather & Alerts */}
+        {/* Right Column - Weather, Activity & Alerts */}
         <div className="space-y-6">
           <LiveWeatherWidget />
+          <RecentActivity />
           <AlertsPanel />
         </div>
       </div>

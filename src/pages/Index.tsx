@@ -8,10 +8,12 @@ import { WeatherView } from '@/components/views/WeatherView';
 import { MarketView } from '@/components/views/MarketView';
 import { CalendarView } from '@/components/views/CalendarView';
 import { AlertsView } from '@/components/views/AlertsView';
+import { FieldDetailView } from '@/components/views/FieldDetailView';
 import { cn } from '@/lib/utils';
+import { useApp } from '@/context/AppContext';
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const { activeTab } = useApp();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const renderView = () => {
@@ -30,6 +32,8 @@ const Index = () => {
         return <CalendarView />;
       case 'alerts':
         return <AlertsView />;
+      case 'field-detail':
+        return <FieldDetailView />;
       default:
         return <DashboardView />;
     }
@@ -38,8 +42,6 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab}
         collapsed={sidebarCollapsed}
         onCollapsedChange={setSidebarCollapsed}
       />
