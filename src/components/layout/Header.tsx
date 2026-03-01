@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Bell, Search, User, ChevronDown, Check, Settings, LogOut } from 'lucide-react';
+import { Bell, Search, User, ChevronDown, Check, Settings, LogOut, Bug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -12,14 +12,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useApp } from '@/context/AppContext';
 import { SettingsModal } from '@/components/modals/SettingsModal';
+import { DiseaseDetectionModal } from '@/components/disease/DiseaseDetectionModal';
 
 interface HeaderProps {
   sidebarCollapsed?: boolean;
 }
 
 export function Header({ sidebarCollapsed }: HeaderProps) {
-  const { currentUser, users, switchUser, searchQuery, setSearchQuery, setActiveTab } = useApp();
+  const { currentUser, users, switchUser, searchQuery, setSearchQuery, setActiveTab, addDiseaseResult } = useApp();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [diseaseModalOpen, setDiseaseModalOpen] = useState(false);
 
   return (
     <>
@@ -37,6 +39,24 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-3">
+          <Button
+            variant="forest"
+            size="sm"
+            onClick={() => setDiseaseModalOpen(true)}
+            className="hidden sm:flex"
+          >
+            <Bug className="w-4 h-4 mr-1" />
+            Diagnose Crop
+          </Button>
+          <Button
+            variant="forest"
+            size="icon"
+            onClick={() => setDiseaseModalOpen(true)}
+            className="sm:hidden"
+          >
+            <Bug className="w-4 h-4" />
+          </Button>
+
           <Button 
             variant="ghost" 
             size="icon" 
@@ -97,6 +117,11 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
       </header>
 
       <SettingsModal open={settingsOpen} onOpenChange={setSettingsOpen} />
+      <DiseaseDetectionModal
+        open={diseaseModalOpen}
+        onOpenChange={setDiseaseModalOpen}
+        onResultSaved={addDiseaseResult}
+      />
     </>
   );
 }

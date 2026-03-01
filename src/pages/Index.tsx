@@ -9,6 +9,7 @@ import { MarketView } from '@/components/views/MarketView';
 import { CalendarView } from '@/components/views/CalendarView';
 import { AlertsView } from '@/components/views/AlertsView';
 import { FieldDetailView } from '@/components/views/FieldDetailView';
+import { DiseaseHistoryView } from '@/components/views/DiseaseHistoryView';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/context/AppContext';
 
@@ -34,6 +35,8 @@ const Index = () => {
         return <AlertsView />;
       case 'field-detail':
         return <FieldDetailView />;
+      case 'disease':
+        return <DiseaseHistoryView />;
       default:
         return <DashboardView />;
     }

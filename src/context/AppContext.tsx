@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { DiseaseResult } from '@/lib/diseaseData';
 
 export interface Field {
   id: number;
@@ -52,6 +53,10 @@ interface AppContextType {
   setActiveTab: (tab: string) => void;
   selectedFieldId: number | null;
   setSelectedFieldId: (id: number | null) => void;
+
+  // Disease Detection
+  diseaseHistory: DiseaseResult[];
+  addDiseaseResult: (result: DiseaseResult) => void;
 }
 
 const defaultUsers: User[] = [
@@ -140,6 +145,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedFieldId, setSelectedFieldId] = useState<number | null>(null);
+  const [diseaseHistory, setDiseaseHistory] = useState<DiseaseResult[]>([]);
+
+  const addDiseaseResult = useCallback((result: DiseaseResult) => {
+    setDiseaseHistory(prev => [result, ...prev]);
+  }, []);
 
   const switchUser = useCallback((userId: number) => {
     const user = users.find(u => u.id === userId);
@@ -182,6 +192,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setActiveTab,
       selectedFieldId,
       setSelectedFieldId,
+      diseaseHistory,
+      addDiseaseResult,
     }}>
       {children}
     </AppContext.Provider>
