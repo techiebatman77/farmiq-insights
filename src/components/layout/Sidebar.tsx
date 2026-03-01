@@ -34,6 +34,7 @@ const navItems: NavItem[] = [
   { icon: Calendar, label: 'Calendar', id: 'calendar' },
   { icon: Bell, label: 'Alerts', id: 'alerts', badge: 3 },
   { icon: Bug, label: 'Disease AI', id: 'disease' },
+  { icon: Bug, label: 'AI Farm Doctor', id: 'farm-doctor' },
 ];
 
 interface SidebarProps {
