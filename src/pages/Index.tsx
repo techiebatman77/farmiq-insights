@@ -10,6 +10,7 @@ import { CalendarView } from '@/components/views/CalendarView';
 import { AlertsView } from '@/components/views/AlertsView';
 import { FieldDetailView } from '@/components/views/FieldDetailView';
 import { DiseaseHistoryView } from '@/components/views/DiseaseHistoryView';
+import { FarmDoctorView } from '@/components/views/FarmDoctorView';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/context/AppContext';
 
@@ -37,6 +38,8 @@ const Index = () => {
         return <FieldDetailView />;
       case 'disease':
         return <DiseaseHistoryView />;
+      case 'farm-doctor':
+        return <FarmDoctorView />;
       default:
         return <DashboardView />;
     }
