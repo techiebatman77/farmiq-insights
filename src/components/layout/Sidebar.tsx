@@ -10,7 +10,8 @@ import {
   Leaf,
   ChevronLeft,
   ChevronRight,
-  MapPin
+  MapPin,
+  Bug
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,7 @@ const navItems: NavItem[] = [
   { icon: TrendingUp, label: 'Market', id: 'market' },
   { icon: Calendar, label: 'Calendar', id: 'calendar' },
   { icon: Bell, label: 'Alerts', id: 'alerts', badge: 3 },
+  { icon: Bug, label: 'Disease AI', id: 'disease' },
 ];
 
 interface SidebarProps {
