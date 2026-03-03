@@ -7,11 +7,12 @@ import { SatelliteNDVI } from '@/components/dashboard/SatelliteNDVI';
 import { RecentActivity } from '@/components/dashboard/RecentActivity';
 import { Leaf, MapPin, TrendingUp, Droplets } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 
 export function DashboardView() {
-  const { currentUser, fields } = useApp();
+  const { fields } = useApp();
+  const { user } = useAuth();
   
-  // Calculate stats from fields
   const avgNDVI = fields.length > 0 
     ? (fields.reduce((sum, f) => sum + f.health, 0) / fields.length).toFixed(2)
     : '0.00';
@@ -23,15 +24,17 @@ export function DashboardView() {
     return 'Good evening';
   };
 
+  const firstName = user?.name?.split(' ')[0] || 'Farmer';
+
   return (
     <>
       {/* Welcome Section */}
       <div className="mb-8 opacity-0 animate-fade-in" style={{ animationDelay: '50ms', animationFillMode: 'forwards' }}>
         <h1 className="text-3xl font-semibold mb-2">
-          {getGreeting()}, {currentUser.name.split(' ')[0]} 👋
+          {getGreeting()}, {firstName} 👋
         </h1>
         <p className="text-muted-foreground">
-          Here's what's happening on {currentUser.farm} today. Weather looks great for fieldwork!
+          Here's what's happening on {user?.farm || 'your farm'} today. Weather looks great for fieldwork!
         </p>
       </div>
 

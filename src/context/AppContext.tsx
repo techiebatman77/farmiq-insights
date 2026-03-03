@@ -60,7 +60,7 @@ interface AppContextType {
 }
 
 const defaultUsers: User[] = [
-  { id: 1, name: 'John Farmer', farm: 'Green Valley Farm' },
+  { id: 1, name: 'Anandu A', farm: 'Kerala Green Farms' },
   { id: 2, name: 'Maria Santos', farm: 'Sunrise Plantation' },
   { id: 3, name: 'Raj Menon', farm: 'Kerala Spice Gardens' },
 ];
