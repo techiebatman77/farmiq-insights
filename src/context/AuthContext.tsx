@@ -14,7 +14,7 @@ interface AuthContextType {
   isLoading: boolean;
 }
 
-const DEMO_USER = { email: 'anandu@farms.kerala', password: 'password123', name: 'Anandu Krishnan', farm: 'Kerala Green Farms' };
+const DEMO_USER = { email: 'anandu@farms.kerala', password: 'password123', name: 'Anandu A', farm: 'Kerala Green Farms' };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
