@@ -20,44 +20,25 @@ const Index = () => {
 
   const renderView = () => {
     switch (activeTab) {
-      case 'dashboard':
-        return <DashboardView />;
-      case 'map':
-        return <FieldMapView />;
-      case 'health':
-        return <CropHealthView />;
-      case 'weather':
-        return <WeatherView />;
-      case 'market':
-        return <MarketView />;
-      case 'calendar':
-        return <CalendarView />;
-      case 'alerts':
-        return <AlertsView />;
-      case 'field-detail':
-        return <FieldDetailView />;
-      case 'disease':
-        return <DiseaseHistoryView />;
-      case 'farm-doctor':
-        return <FarmDoctorView />;
-      default:
-        return <DashboardView />;
+      case 'dashboard': return <DashboardView />;
+      case 'map': return <FieldMapView />;
+      case 'health': return <CropHealthView />;
+      case 'weather': return <WeatherView />;
+      case 'market': return <MarketView />;
+      case 'calendar': return <CalendarView />;
+      case 'alerts': return <AlertsView />;
+      case 'field-detail': return <FieldDetailView />;
+      case 'disease': return <DiseaseHistoryView />;
+      case 'farm-doctor': return <FarmDoctorView />;
+      default: return <DashboardView />;
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar 
-        collapsed={sidebarCollapsed}
-        onCollapsedChange={setSidebarCollapsed}
-      />
-      
-      <main className={cn(
-        "transition-all duration-300",
-        sidebarCollapsed ? "pl-20" : "pl-64"
-      )}>
+      <Sidebar collapsed={sidebarCollapsed} onCollapsedChange={setSidebarCollapsed} />
+      <main className={cn("transition-all duration-300", sidebarCollapsed ? "pl-20" : "pl-64")}>
         <Header />
-        
         <div className="p-6 max-w-[1600px] mx-auto">
           {renderView()}
         </div>
