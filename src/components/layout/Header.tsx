@@ -1,26 +1,14 @@
 import { useState } from 'react';
-import { Bell, Search, User, ChevronDown, Check, Settings, LogOut, Bug } from 'lucide-react';
+import { Bell, Search, User, Stethoscope } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { useApp } from '@/context/AppContext';
-import { SettingsModal } from '@/components/modals/SettingsModal';
+import { useAuth } from '@/context/AuthContext';
 import { DiseaseDetectionModal } from '@/components/disease/DiseaseDetectionModal';
 
-interface HeaderProps {
-  sidebarCollapsed?: boolean;
-}
-
-export function Header({ sidebarCollapsed }: HeaderProps) {
-  const { currentUser, users, switchUser, searchQuery, setSearchQuery, setActiveTab, addDiseaseResult } = useApp();
-  const [settingsOpen, setSettingsOpen] = useState(false);
+export function Header() {
+  const { searchQuery, setSearchQuery, setActiveTab, addDiseaseResult } = useApp();
+  const { user } = useAuth();
   const [diseaseModalOpen, setDiseaseModalOpen] = useState(false);
 
   return (
@@ -39,89 +27,34 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button
-            variant="forest"
-            size="sm"
-            onClick={() => setDiseaseModalOpen(true)}
-            className="hidden sm:flex"
-          >
-            <Bug className="w-4 h-4 mr-1" />
-            Diagnose Crop
+          <Button variant="forest" size="sm" onClick={() => setDiseaseModalOpen(true)} className="hidden sm:flex">
+            <Stethoscope className="w-4 h-4 mr-1" />
+            🚨 AI Doctor
           </Button>
-          <Button
-            variant="forest"
-            size="icon"
-            onClick={() => setDiseaseModalOpen(true)}
-            className="sm:hidden"
-          >
-            <Bug className="w-4 h-4" />
+          <Button variant="forest" size="icon" onClick={() => setDiseaseModalOpen(true)} className="sm:hidden">
+            <Stethoscope className="w-4 h-4" />
           </Button>
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="relative"
-            onClick={() => setActiveTab('alerts')}
-          >
+          <Button variant="ghost" size="icon" className="relative" onClick={() => setActiveTab('alerts')}>
             <Bell className="w-5 h-5" />
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-danger text-primary-foreground text-xs rounded-full flex items-center justify-center">
-              3
-            </span>
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-danger text-primary-foreground text-xs rounded-full flex items-center justify-center">3</span>
           </Button>
 
           <div className="w-px h-8 bg-border" />
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-3 hover:bg-muted rounded-lg p-2 transition-colors">
-                <div className="w-9 h-9 rounded-full bg-gradient-hero flex items-center justify-center">
-                  <User className="w-4 h-4 text-primary-foreground" />
-                </div>
-                <div className="text-left hidden sm:block">
-                  <p className="text-sm font-medium">{currentUser.name}</p>
-                  <p className="text-xs text-muted-foreground">{currentUser.farm}</p>
-                </div>
-                <ChevronDown className="w-4 h-4 text-muted-foreground hidden sm:block" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Switch User</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {users.map(user => (
-                <DropdownMenuItem 
-                  key={user.id} 
-                  onClick={() => switchUser(user.id)}
-                  className="flex items-center justify-between"
-                >
-                  <div>
-                    <p className="font-medium">{user.name}</p>
-                    <p className="text-xs text-muted-foreground">{user.farm}</p>
-                  </div>
-                  {currentUser.id === user.id && (
-                    <Check className="w-4 h-4 text-growth" />
-                  )}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
-                <Settings className="w-4 h-4 mr-2" />
-                Profile Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-danger">
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-gradient-hero flex items-center justify-center">
+              <User className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <div className="text-left hidden sm:block">
+              <p className="text-sm font-medium">{user?.name || 'Farmer'}</p>
+              <p className="text-xs text-muted-foreground">{user?.farm || 'My Farm'}</p>
+            </div>
+          </div>
         </div>
       </header>
 
-      <SettingsModal open={settingsOpen} onOpenChange={setSettingsOpen} />
-      <DiseaseDetectionModal
-        open={diseaseModalOpen}
-        onOpenChange={setDiseaseModalOpen}
-        onResultSaved={addDiseaseResult}
-      />
+      <DiseaseDetectionModal open={diseaseModalOpen} onOpenChange={setDiseaseModalOpen} onResultSaved={addDiseaseResult} />
     </>
   );
 }
