@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const users = JSON.parse(localStorage.getItem('agrismart_users') || '[]');
     if (users.some((u: any) => u.email === email) || email === DEMO_USER.email) return false;
     users.push({ email, password, name, farm });
-    localStorage.setItem('farmiq_users', JSON.stringify(users));
+    localStorage.setItem('agrismart_users', JSON.stringify(users));
     const u = { email, name, farm };
     setUser(u);
     localStorage.setItem('farmiq_user', JSON.stringify(u));
