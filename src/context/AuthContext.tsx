@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return true;
     }
     // Check registered users
-    const users = JSON.parse(localStorage.getItem('farmiq_users') || '[]');
+    const users = JSON.parse(localStorage.getItem('agrismart_users') || '[]');
     const found = users.find((u: any) => u.email === email && u.password === password);
     if (found) {
       const u = { email: found.email, name: found.name, farm: found.farm };
