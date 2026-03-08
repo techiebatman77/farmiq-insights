@@ -3,16 +3,18 @@ import { Plus, FileText, Camera, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AddFieldModal } from '@/components/modals/AddFieldModal';
 import { LogObservationModal } from '@/components/modals/LogObservationModal';
+import { GenerateReportModal } from '@/components/modals/GenerateReportModal';
 import { toast } from 'sonner';
 
 export function QuickActions() {
   const [addFieldOpen, setAddFieldOpen] = useState(false);
   const [logObservationOpen, setLogObservationOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const actions = [
     { icon: Plus, label: 'Add Field', onClick: () => setAddFieldOpen(true) },
     { icon: Camera, label: 'Log Observation', onClick: () => setLogObservationOpen(true) },
-    { icon: FileText, label: 'Generate Report', onClick: () => toast.info('Report generation coming soon!') },
+    { icon: FileText, label: 'Generate Report', onClick: () => setReportOpen(true) },
     { icon: MessageSquare, label: 'Ask Advisor', onClick: () => toast.info('AI Advisor coming soon!') },
   ];
 
@@ -34,6 +36,7 @@ export function QuickActions() {
 
       <AddFieldModal open={addFieldOpen} onOpenChange={setAddFieldOpen} />
       <LogObservationModal open={logObservationOpen} onOpenChange={setLogObservationOpen} />
+      <GenerateReportModal open={reportOpen} onOpenChange={setReportOpen} />
     </>
   );
 }
