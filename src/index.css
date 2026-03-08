@@ -101,12 +101,23 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-text-size-adjust: 100%;
   }
 
   h1, h2, h3 {
     font-family: 'Anton', 'Impact', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+  }
+
+  /* Ensure minimum readable text size on mobile */
+  @media (max-width: 767px) {
+    .font-mono {
+      font-size: max(11px, 1em) !important;
+    }
+    p, span, a {
+      min-font-size: 11px;
+    }
   }
 }
 
@@ -118,7 +129,7 @@
   }
 
   .stat-card {
-    @apply bg-card/70 backdrop-blur-md border border-border/50 p-5 transition-all duration-300;
+    @apply bg-card/70 backdrop-blur-md border border-border/50 p-4 md:p-5 transition-all duration-300;
     box-shadow: var(--shadow-sm);
   }
 
@@ -156,10 +167,16 @@
   /* Coordinate marker text */
   .coord-text {
     font-family: 'DM Mono', monospace;
-    font-size: 9px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: hsl(var(--muted-foreground));
+  }
+
+  @media (min-width: 768px) {
+    .coord-text {
+      font-size: 9px;
+    }
   }
 
   /* Pixel grid border */
