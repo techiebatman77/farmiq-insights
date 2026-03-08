@@ -118,7 +118,7 @@
   }
 
   .stat-card {
-    @apply bg-card/70 backdrop-blur-md border border-border/50 p-5 transition-all duration-300;
+    @apply bg-card/70 backdrop-blur-md border border-border/50 p-4 md:p-5 transition-all duration-300;
     box-shadow: var(--shadow-sm);
   }
 
