@@ -89,7 +89,7 @@ export function GenerateReportModal({ open, onOpenChange }: GenerateReportModalP
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `farmiq-report-${reportType}-${now.toISOString().slice(0, 10)}.txt`;
+    a.download = `agrismart-report-${reportType}-${now.toISOString().slice(0, 10)}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
