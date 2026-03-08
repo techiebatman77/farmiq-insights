@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem('farmiq_user');
+    const stored = localStorage.getItem('agrismart_user');
     if (stored) setUser(JSON.parse(stored));
     setIsLoading(false);
   }, []);
