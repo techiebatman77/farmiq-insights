@@ -107,7 +107,7 @@ export default function Login() {
           )}
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Email</Label>
-            <Input id="email" type="email" placeholder="anandu@farms.kerala" value={email} onChange={e => setEmail(e.target.value)} required className="bg-muted/30 border-border/50 font-mono text-sm" />
+            <Input id="email" type="text" placeholder="anandu@farms.kerala" value={email} onChange={e => setEmail(e.target.value)} required className="bg-muted/30 border-border/50 font-mono text-sm" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password" className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Password</Label>
