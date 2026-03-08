@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (email === DEMO_USER.email && password === DEMO_USER.password) {
       const u = { email: DEMO_USER.email, name: DEMO_USER.name, farm: DEMO_USER.farm };
       setUser(u);
-      localStorage.setItem('farmiq_user', JSON.stringify(u));
+      localStorage.setItem('agrismart_user', JSON.stringify(u));
       return true;
     }
     // Check registered users
