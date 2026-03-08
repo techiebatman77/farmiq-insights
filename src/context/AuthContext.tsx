@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('agrismart_users', JSON.stringify(users));
     const u = { email, name, farm };
     setUser(u);
-    localStorage.setItem('farmiq_user', JSON.stringify(u));
+    localStorage.setItem('agrismart_user', JSON.stringify(u));
     return true;
   };
 
