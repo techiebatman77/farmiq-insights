@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('farmiq_user');
+    localStorage.removeItem('agrismart_user');
   };
 
   return (
