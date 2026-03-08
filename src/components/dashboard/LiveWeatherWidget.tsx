@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Cloud, Droplets, Wind, Sun, CloudRain, Thermometer, Eye, Gauge, Loader2 } from 'lucide-react';
+import { Cloud, Droplets, Wind, Sun, CloudRain, Thermometer, Gauge, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface WeatherData {
@@ -19,20 +19,15 @@ interface WeatherData {
   }[];
 }
 
-// Kerala cities for weather
 const KERALA_CITIES = [
   { name: 'Kochi', lat: 9.9312, lon: 76.2673 },
-  { name: 'Thiruvananthapuram', lat: 8.5241, lon: 76.9366 },
+  { name: 'Trivandrum', lat: 8.5241, lon: 76.9366 },
   { name: 'Kozhikode', lat: 11.2588, lon: 75.7804 },
   { name: 'Thrissur', lat: 10.5276, lon: 76.2144 },
 ];
 
 const weatherIcons: Record<string, typeof Sun> = {
-  Clear: Sun,
-  Clouds: Cloud,
-  Rain: CloudRain,
-  Drizzle: CloudRain,
-  Thunderstorm: CloudRain,
+  Clear: Sun, Clouds: Cloud, Rain: CloudRain, Drizzle: CloudRain, Thunderstorm: CloudRain,
 };
 
 function getWeatherIcon(condition: string) {
@@ -43,7 +38,7 @@ function getDayName(timestamp: number): string {
   const date = new Date(timestamp * 1000);
   const today = new Date();
   if (date.toDateString() === today.toDateString()) return 'Today';
-  return date.toLocaleDateString('en-US', { weekday: 'short' });
+  return date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
 }
 
 export function LiveWeatherWidget() {
@@ -56,18 +51,13 @@ export function LiveWeatherWidget() {
     const fetchWeather = async () => {
       setLoading(true);
       setError(null);
-      
       try {
-        // Using Open-Meteo API (completely free, no API key needed)
         const response = await fetch(
           `https://api.open-meteo.com/v1/forecast?latitude=${selectedCity.lat}&longitude=${selectedCity.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,surface_pressure&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia/Kolkata&forecast_days=7`
         );
-        
-        if (!response.ok) throw new Error('Failed to fetch weather');
-        
+        if (!response.ok) throw new Error('Failed to fetch');
         const data = await response.json();
         
-        // Transform Open-Meteo data to our format
         const weatherCodeMap: Record<number, string> = {
           0: 'Clear', 1: 'Clear', 2: 'Clouds', 3: 'Clouds',
           45: 'Clouds', 48: 'Clouds',
@@ -104,34 +94,31 @@ export function LiveWeatherWidget() {
             }]
           }))
         };
-
         setWeather(transformedData);
       } catch (err) {
-        setError('Failed to load weather data');
+        setError('Failed to load weather');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchWeather();
-    // Refresh every 30 minutes
     const interval = setInterval(fetchWeather, 30 * 60 * 1000);
     return () => clearInterval(interval);
   }, [selectedCity]);
 
   if (loading) {
     return (
-      <div className="stat-card p-6 opacity-0 animate-slide-up flex items-center justify-center h-[300px]" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-        <Loader2 className="w-8 h-8 animate-spin text-sky" />
+      <div className="stat-card flex items-center justify-center h-[260px] opacity-0 animate-slide-up" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
+        <Loader2 className="w-6 h-6 animate-spin text-sage" />
       </div>
     );
   }
 
   if (error || !weather) {
     return (
-      <div className="stat-card p-6 opacity-0 animate-slide-up" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-        <p className="text-muted-foreground text-center">{error || 'No data available'}</p>
+      <div className="stat-card opacity-0 animate-slide-up" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
+        <p className="text-muted-foreground text-center font-mono text-xs">{error || 'No data'}</p>
       </div>
     );
   }
@@ -139,19 +126,19 @@ export function LiveWeatherWidget() {
   const CurrentIcon = getWeatherIcon(weather.current.weather[0].main);
 
   return (
-    <div className="stat-card p-0 overflow-hidden opacity-0 animate-slide-up" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-      {/* City Selector */}
-      <div className="p-3 border-b border-border">
+    <div className="stat-card p-0 overflow-hidden tactical-corners opacity-0 animate-slide-up" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
+      {/* City selector */}
+      <div className="p-3 border-b border-border/30">
         <div className="flex gap-1 overflow-x-auto">
           {KERALA_CITIES.map((city) => (
             <button
               key={city.name}
               onClick={() => setSelectedCity(city)}
               className={cn(
-                "px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-all",
+                "px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider whitespace-nowrap transition-all",
                 selectedCity.name === city.name
-                  ? "bg-sky text-white"
-                  : "bg-muted text-muted-foreground hover:text-foreground"
+                  ? "bg-primary/10 text-primary border border-primary/30"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               {city.name}
@@ -160,63 +147,51 @@ export function LiveWeatherWidget() {
         </div>
       </div>
 
-      {/* Current Weather */}
-      <div className="bg-gradient-sky p-6 text-accent-foreground">
+      {/* Current */}
+      <div className="p-5 border-b border-border/30">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm opacity-80">{selectedCity.name}, Kerala</p>
-            <p className="text-4xl font-semibold mt-1">{weather.current.temp}°C</p>
-            <p className="text-sm mt-1 opacity-90 capitalize">{weather.current.weather[0].description}</p>
+            <p className="coord-text mb-1">{selectedCity.name}, Kerala</p>
+            <p className="text-4xl font-display text-foreground">{weather.current.temp}°C</p>
+            <p className="text-xs font-mono text-muted-foreground mt-1 capitalize">{weather.current.weather[0].description}</p>
           </div>
-          <CurrentIcon className="w-16 h-16 opacity-90" />
+          <CurrentIcon className="w-10 h-10 text-sage opacity-60" strokeWidth={1} />
         </div>
         
-        <div className="grid grid-cols-4 gap-4 mt-4">
-          <div className="flex flex-col items-center gap-1">
-            <Droplets className="w-4 h-4 opacity-80" />
-            <span className="text-xs">{weather.current.humidity}%</span>
-            <span className="text-[10px] opacity-70">Humidity</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Wind className="w-4 h-4 opacity-80" />
-            <span className="text-xs">{weather.current.wind_speed} km/h</span>
-            <span className="text-[10px] opacity-70">Wind</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Gauge className="w-4 h-4 opacity-80" />
-            <span className="text-xs">{weather.current.pressure} hPa</span>
-            <span className="text-[10px] opacity-70">Pressure</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Thermometer className="w-4 h-4 opacity-80" />
-            <span className="text-xs">{weather.current.feels_like}°C</span>
-            <span className="text-[10px] opacity-70">Feels like</span>
-          </div>
+        <div className="grid grid-cols-4 gap-3 mt-4">
+          {[
+            { icon: Droplets, val: `${weather.current.humidity}%`, label: 'Humid' },
+            { icon: Wind, val: `${weather.current.wind_speed}km/h`, label: 'Wind' },
+            { icon: Gauge, val: `${weather.current.pressure}`, label: 'hPa' },
+            { icon: Thermometer, val: `${weather.current.feels_like}°`, label: 'Feels' },
+          ].map((item) => (
+            <div key={item.label} className="flex flex-col items-center gap-1">
+              <item.icon className="w-3.5 h-3.5 text-muted-foreground" strokeWidth={1.5} />
+              <span className="text-[10px] font-mono text-foreground">{item.val}</span>
+              <span className="text-[8px] font-mono text-muted-foreground uppercase">{item.label}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* 7-Day Forecast */}
-      <div className="p-4">
-        <p className="text-sm font-medium mb-3">7-Day Forecast</p>
-        <div className="flex gap-2 overflow-x-auto pb-2">
+      {/* 7-Day */}
+      <div className="p-3">
+        <p className="coord-text mb-2">7-Day Forecast</p>
+        <div className="flex gap-1.5 overflow-x-auto pb-1">
           {weather.daily.slice(0, 7).map((day, i) => {
             const DayIcon = getWeatherIcon(day.weather[0].main);
             return (
               <div 
                 key={day.dt}
                 className={cn(
-                  "flex flex-col items-center p-3 rounded-lg min-w-[70px] transition-colors",
-                  i === 0 ? "bg-primary/10" : "hover:bg-muted"
+                  "flex flex-col items-center p-2 min-w-[52px] transition-colors",
+                  i === 0 ? "bg-primary/5 border border-primary/20" : "hover:bg-muted/30"
                 )}
               >
-                <span className="text-xs text-muted-foreground">{getDayName(day.dt)}</span>
-                <DayIcon className={cn(
-                  "w-6 h-6 my-2",
-                  day.weather[0].main === 'Clear' ? 'text-wheat' : 
-                  day.weather[0].main === 'Rain' || day.weather[0].main === 'Drizzle' ? 'text-sky' : 'text-muted-foreground'
-                )} />
-                <span className="text-sm font-medium">{day.temp.max}°</span>
-                <span className="text-xs text-muted-foreground">{day.temp.min}°</span>
+                <span className="text-[9px] font-mono text-muted-foreground">{getDayName(day.dt)}</span>
+                <DayIcon className="w-4 h-4 my-1.5 text-sage" strokeWidth={1.5} />
+                <span className="text-[10px] font-mono text-foreground">{day.temp.max}°</span>
+                <span className="text-[9px] font-mono text-muted-foreground">{day.temp.min}°</span>
               </div>
             );
           })}

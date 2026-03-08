@@ -15,6 +15,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['DM Sans', 'system-ui', 'sans-serif'],
+        display: ['Anton', 'Impact', 'sans-serif'],
+        mono: ['DM Mono', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -60,7 +62,23 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Custom agricultural colors
+        // Tactical palette
+        sage: {
+          DEFAULT: "hsl(var(--sage))",
+          light: "hsl(var(--sage-light))",
+        },
+        canyon: {
+          DEFAULT: "hsl(var(--canyon))",
+          light: "hsl(var(--canyon-light))",
+        },
+        lime: {
+          DEFAULT: "hsl(var(--lime))",
+          muted: "hsl(var(--lime-muted))",
+        },
+        topo: {
+          line: "hsl(var(--topo-line))",
+        },
+        // Preserved agri colors
         wheat: {
           DEFAULT: "hsl(var(--wheat))",
           light: "hsl(var(--wheat-light))",
@@ -99,9 +117,9 @@ export default {
       },
       backgroundImage: {
         'gradient-hero': 'var(--gradient-hero)',
-        'gradient-wheat': 'var(--gradient-wheat)',
-        'gradient-sky': 'var(--gradient-sky)',
+        'gradient-topo': 'var(--gradient-topo)',
         'gradient-card': 'var(--gradient-card)',
+        'gradient-canyon': 'var(--gradient-canyon)',
       },
       keyframes: {
         "accordion-down": {
@@ -120,12 +138,17 @@ export default {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        "topo-drift": {
+          "0%": { transform: "translateY(0) rotate(0deg)" },
+          "100%": { transform: "translateY(-20px) rotate(0.5deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "float": "float 6s ease-in-out infinite",
         "shimmer": "shimmer 2s linear infinite",
+        "topo-drift": "topo-drift 20s ease-in-out infinite alternate",
       },
     },
   },

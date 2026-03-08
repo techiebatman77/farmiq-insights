@@ -10,26 +10,24 @@ export function QuickActions() {
   const [logObservationOpen, setLogObservationOpen] = useState(false);
 
   const actions = [
-    { icon: Plus, label: 'Add Field', color: 'bg-forest', onClick: () => setAddFieldOpen(true) },
-    { icon: Camera, label: 'Log Observation', color: 'bg-sky', onClick: () => setLogObservationOpen(true) },
-    { icon: FileText, label: 'Generate Report', color: 'bg-wheat', onClick: () => toast.info('Report generation coming soon! This will export your farm data as PDF/CSV.') },
-    { icon: MessageSquare, label: 'Ask Advisor', color: 'bg-growth', onClick: () => toast.info('AI Advisor coming soon! Get personalized farming recommendations.') },
+    { icon: Plus, label: 'Add Field', onClick: () => setAddFieldOpen(true) },
+    { icon: Camera, label: 'Log Observation', onClick: () => setLogObservationOpen(true) },
+    { icon: FileText, label: 'Generate Report', onClick: () => toast.info('Report generation coming soon!') },
+    { icon: MessageSquare, label: 'Ask Advisor', onClick: () => toast.info('AI Advisor coming soon!') },
   ];
 
   return (
     <>
-      <div className="flex gap-3 flex-wrap">
+      <div className="flex gap-2 flex-wrap">
         {actions.map((action) => (
           <Button
             key={action.label}
-            variant="glass"
-            className="flex-1 min-w-[140px] h-auto py-4 flex-col gap-2"
+            variant="outline"
+            className="flex-1 min-w-[120px] h-auto py-3 flex-col gap-2 border-border/50 hover:border-primary/30 hover:bg-primary/5 font-mono text-xs uppercase tracking-wider"
             onClick={action.onClick}
           >
-            <div className={`w-10 h-10 rounded-lg ${action.color} flex items-center justify-center`}>
-              <action.icon className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="text-sm font-medium">{action.label}</span>
+            <action.icon className="w-4 h-4 text-primary" strokeWidth={1.5} />
+            <span className="text-muted-foreground">{action.label}</span>
           </Button>
         ))}
       </div>
