@@ -156,10 +156,16 @@
   /* Coordinate marker text */
   .coord-text {
     font-family: 'DM Mono', monospace;
-    font-size: 9px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: hsl(var(--muted-foreground));
+  }
+
+  @media (min-width: 768px) {
+    .coord-text {
+      font-size: 9px;
+    }
   }
 
   /* Pixel grid border */
