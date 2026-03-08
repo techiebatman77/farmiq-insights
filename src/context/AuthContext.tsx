@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem('farmiq_user');
+    const stored = localStorage.getItem('agrismart_user');
     if (stored) setUser(JSON.parse(stored));
     setIsLoading(false);
   }, []);
@@ -33,35 +33,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (email === DEMO_USER.email && password === DEMO_USER.password) {
       const u = { email: DEMO_USER.email, name: DEMO_USER.name, farm: DEMO_USER.farm };
       setUser(u);
-      localStorage.setItem('farmiq_user', JSON.stringify(u));
+      localStorage.setItem('agrismart_user', JSON.stringify(u));
       return true;
     }
     // Check registered users
-    const users = JSON.parse(localStorage.getItem('farmiq_users') || '[]');
+    const users = JSON.parse(localStorage.getItem('agrismart_users') || '[]');
     const found = users.find((u: any) => u.email === email && u.password === password);
     if (found) {
       const u = { email: found.email, name: found.name, farm: found.farm };
       setUser(u);
-      localStorage.setItem('farmiq_user', JSON.stringify(u));
+      localStorage.setItem('agrismart_user', JSON.stringify(u));
       return true;
     }
     return false;
   };
 
   const signup = (email: string, password: string, name: string, farm: string): boolean => {
-    const users = JSON.parse(localStorage.getItem('farmiq_users') || '[]');
+    const users = JSON.parse(localStorage.getItem('agrismart_users') || '[]');
     if (users.some((u: any) => u.email === email) || email === DEMO_USER.email) return false;
     users.push({ email, password, name, farm });
-    localStorage.setItem('farmiq_users', JSON.stringify(users));
+    localStorage.setItem('agrismart_users', JSON.stringify(users));
     const u = { email, name, farm };
     setUser(u);
-    localStorage.setItem('farmiq_user', JSON.stringify(u));
+    localStorage.setItem('agrismart_user', JSON.stringify(u));
     return true;
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('farmiq_user');
+    localStorage.removeItem('agrismart_user');
   };
 
   return (

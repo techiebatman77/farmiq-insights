@@ -40,7 +40,7 @@ export function GenerateReportModal({ open, onOpenChange }: GenerateReportModalP
     const dateStr = now.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-    let reportContent = `FARMIQ INSIGHTS — FARM REPORT\n`;
+    let reportContent = `AGRISMART — FARM REPORT\n`;
     reportContent += `Generated: ${dateStr} at ${timeStr}\n`;
     reportContent += `Report Type: ${reportType.toUpperCase()}\n`;
     reportContent += `${'='.repeat(50)}\n\n`;
@@ -82,14 +82,14 @@ export function GenerateReportModal({ open, onOpenChange }: GenerateReportModalP
     }
 
     reportContent += `${'='.repeat(50)}\n`;
-    reportContent += `End of Report — FarmIQ Insights\n`;
+    reportContent += `End of Report — AgriSmart\n`;
 
     // Download as text file
     const blob = new Blob([reportContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `farmiq-report-${reportType}-${now.toISOString().slice(0, 10)}.txt`;
+    a.download = `agrismart-report-${reportType}-${now.toISOString().slice(0, 10)}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
