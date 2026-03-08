@@ -82,7 +82,7 @@ export function GenerateReportModal({ open, onOpenChange }: GenerateReportModalP
     }
 
     reportContent += `${'='.repeat(50)}\n`;
-    reportContent += `End of Report — FarmIQ Insights\n`;
+    reportContent += `End of Report — AgriSmart\n`;
 
     // Download as text file
     const blob = new Blob([reportContent], { type: 'text/plain' });
