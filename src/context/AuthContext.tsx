@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (found) {
       const u = { email: found.email, name: found.name, farm: found.farm };
       setUser(u);
-      localStorage.setItem('farmiq_user', JSON.stringify(u));
+      localStorage.setItem('agrismart_user', JSON.stringify(u));
       return true;
     }
     return false;
